@@ -1,0 +1,13 @@
+@(prods:Seq[Product])
+
+@main("Product list") {
+    
+    @for( prod <- prods ) {
+      <div>
+        <strong>@prod.name</strong>
+        @prod.ean<br />
+        <pre><code>@prod.description</code></pre>
+      </div>
+    }
+
+}

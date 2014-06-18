@@ -1,0 +1,17 @@
+@(message: String, stockItems:Map[Product,Seq[StockItem]])
+
+@main("Payper clip index") {
+  
+    <ol>
+    @for( (p,sis)<-stockItems ){
+      <li><a href="@routes.Products.showItem(p.ean)">@p.ean // @p.name</a>
+        <ul>
+          @for(si<-sis) {
+            <li>@si.quantity units at warehouse @si.warehouseId</li>
+          }
+        </ul>
+      </li>
+    }
+    </ol>
+
+}

@@ -1,0 +1,11 @@
+@(prod:Product)
+
+@main("Product: " + prod.name ) {
+  
+    <div>
+      <strong>@prod.name</strong>
+      @prod.ean<br />
+      <pre><code>@prod.description</code></pre>
+    </div>
+
+}
