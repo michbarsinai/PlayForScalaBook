@@ -28,13 +28,15 @@ object Product {
   val selectAllQry = SQL("select * from products order by name asc")
   val findByEan = SQL("select * from products where ean={ean}")
   val prodsAndItems =  SQL("""
-    SELECT p.*, s.* FROM products p INNER JOIN stock_items s 
-    ON p.id = s.product_id
-    ORDER BY p.id
+    SELECT p.id, p.ean, p.name, p.description, 
+            s.id, s.product_id, s.warehouse_id, s.quantity
+    FROM products p
+     INNER JOIN stock_items s ON p.id = s.product_id 
     """)
 
+
   val productParser: RowParser[Product] = {
-    long("id")~long("ean")~str("name")~str("description") map {
+    long("products.id")~long("products.ean")~str("products.name")~str("products.description") map {
       case id~ean~name~description => Product(id, ean, name, description)
     }
   }
@@ -44,7 +46,7 @@ object Product {
   }
 
   val stockItemParser: RowParser[StockItem] = {
-    long("id")~long("product_id")~long("warehouse_id")~long("quantity") map {
+    long("stock_items.id")~long("stock_items.product_id")~long("stock_items.warehouse_id")~long("stock_items.quantity") map {
       case id~prodId~wareHouseId~quantity => StockItem(id,prodId,wareHouseId,quantity)
     }
   }
