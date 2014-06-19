@@ -14,7 +14,7 @@ def list = Action{
 
 def showItem(ean:Long) = Action {
   Product.find(ean) match {
-    case Some(p) => Ok(views.html.product(p))
+    case Some(p) => Ok(views.html.product(p, Product.listStockItemsFor(p.id)))
     case None    => NotFound("No such product " + ean)
   }
 }

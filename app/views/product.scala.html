@@ -1,4 +1,4 @@
-@(prod:Product)
+@(prod:Product, itms:Seq[StockItem])
 
 @main("Product: " + prod.name ) {
   
@@ -6,6 +6,12 @@
       <strong>@prod.name</strong>
       @prod.ean<br />
       <pre><code>@prod.description</code></pre>
+      <h5>Stock items</h5>
+      <ol>
+        @for( i <- itms ) {
+          <li>@i.quantity at warehouse @i.warehouseId</li>
+        }
+      </ol>
     </div>
 
 }

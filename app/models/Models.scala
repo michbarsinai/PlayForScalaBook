@@ -28,10 +28,14 @@ object Product {
   val selectAllQry = SQL("select * from products order by name asc")
   val findByEan = SQL("select * from products where ean={ean}")
   val prodsAndItems =  SQL("""
-    SELECT p.id, p.ean, p.name, p.description, 
-            s.id, s.product_id, s.warehouse_id, s.quantity
+    SELECT p.*, s.*
     FROM products p
      INNER JOIN stock_items s ON p.id = s.product_id 
+    """)
+  val prodsForItem =  SQL("""
+    SELECT *
+    FROM stock_items
+    WHERE product_id={product_id}
     """)
 
 
@@ -63,6 +67,7 @@ object Product {
     findByEan.on(
       "ean" -> ean).as(
         productsParser).headOption
+      // Note: we could also cache this.
   }
   
   def selectAllParser:List[Product] = DB.withConnection {
@@ -79,6 +84,10 @@ object Product {
   def selectAllProductsAndItems: Map[Product,Seq[StockItem]] = DB.withConnection{ implicit c =>
     val res:List[(Product, StockItem)] = prodsAndItems.as( productStockItemParser * )
     res.groupBy( _._1 ).mapValues( _.map(_._2) )
+  }
+
+  def listStockItemsFor( id:Long ) = DB.withConnection { implicit c =>
+    prodsForItem.on( "product_id" -> id ).as( stockItemsParser )
   }
 
   def selPSI1 = DB.withConnection{ implicit c =>
